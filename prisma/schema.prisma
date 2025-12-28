@@ -1,0 +1,28 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Feeling {
+  CALM
+  HAPPY
+  SAD
+  ANXIOUS
+}
+
+model Mood {
+  id        Int      @id @default(autoincrement())
+  feeling   Feeling
+  createdAt DateTime @default(now())
+}
+
+model JournalEntry {
+  id        Int       @id @default(autoincrement())
+  content   String
+  feeling   Feeling?   // optional ✔
+  createdAt DateTime  @default(now())
+}
