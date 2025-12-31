@@ -1,4 +1,5 @@
 import express from "express";
+import authRoutes from "./routes/auth.routes";
 import journalRoutes from "./routes/journal.routes";
 import moodRoutes from "./routes/mood.routes";
 import insightsRoutes from "./routes/insights.routes";
@@ -14,6 +15,7 @@ app.get("/health", (_req, res) => {
 
 // routes
 app.use("/moods", moodRoutes);
+app.use("/auth", authRoutes);
 app.use("/journal", journalRoutes);
 app.use("/insights", insightsRoutes);
 

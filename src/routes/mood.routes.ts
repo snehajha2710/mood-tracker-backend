@@ -1,10 +1,11 @@
 import { Router } from "express";
 import prisma from "../db";
+import { requireAuth } from "../middleware/requireAuth";
 
 const router = Router();
 
-// POST /moods
-router.post("/", async (req, res) => {
+// CREATE mood (protected)
+router.post("/", requireAuth, async (req, res) => {
   const { feeling } = req.body;
 
   if (!feeling) {
@@ -12,25 +13,30 @@ router.post("/", async (req, res) => {
   }
 
   const mood = await prisma.mood.create({
-    data: { feeling },
+    data: {
+      feeling,
+      userId: req.userId, // 🔥 THIS shows real backend skill
+    },
   });
 
   res.status(201).json(mood);
 });
 
-// GET /moods
-router.get("/", async (_req, res) => {
+// GET moods (protected)
+router.get("/", requireAuth, async (req, res) => {
   const moods = await prisma.mood.findMany({
+    where: { userId: req.userId },
     orderBy: { createdAt: "desc" },
   });
 
   res.json(moods);
 });
 
-// GET /moods/summary
-router.get("/summary", async (_req, res) => {
+// GET moods summary (protected)
+router.get("/summary", requireAuth, async (req, res) => {
   const summary = await prisma.mood.groupBy({
     by: ["feeling"],
+    where: { userId: req.userId },
     _count: true,
   });
 
